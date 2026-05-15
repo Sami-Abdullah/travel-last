@@ -25,18 +25,23 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    
+
     const db = client.db("travelast")
     const destinationCollection = db.collection('destinations')
-    
-    
+
+
     app.post('/destination', async (req, res) => {
       const destination = req.body
-      if (destination)console.log(destination);
+      if (destination) console.log(destination);
       const result = await destinationCollection.insertOne(destination)
       res.json(result)
     })
 
+    app.get('/destination', async(req, res) => {
+      const result = await destinationCollection.find().toArray()
+      
+      res.json(result)
+    })
 
   } finally {
     // Ensures that the client will close when you finish/error
