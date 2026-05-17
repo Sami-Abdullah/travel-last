@@ -3,7 +3,7 @@ const app = express()
 const cors = require('cors')
 const port = process.env.PORT || 5000
 
-const { MongoClient, ServerApiVersion } = require('mongodb')
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb')
 const dontenv = require('dotenv')
 dontenv.config()
 const uri = process.env.MONGODB_URI;
@@ -37,9 +37,31 @@ async function run() {
       res.json(result)
     })
 
-    app.get('/destination', async(req, res) => {
+    app.get('/destination', async (req, res) => {
       const result = await destinationCollection.find().toArray()
-      
+
+      res.json(result)
+    })
+    app.get('/destination/:id', async (req, res) => {
+      const { id } = await req.params
+      const result = await destinationCollection.findOne({ '_id': new ObjectId(id) })
+
+      res.json(result)
+    })
+    app.patch('/destination/:id', async (req, res) => {
+      const { id } = await req.params
+      const upadteData = await req.body
+      console.log(upadteData);
+      const result = await destinationCollection.updateOne(
+
+        {
+          '_id': new ObjectId(id)
+        },
+        {
+          $set: upadteData
+        }
+      )
+
       res.json(result)
     })
 
